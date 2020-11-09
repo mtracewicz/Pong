@@ -14,7 +14,7 @@ class Board():
         self._ball = {
             'x': Constants.WIDTH//2,
             'y': Constants.HEIGHT//2,
-            'vx': 2 if random.randint(1,3)==1 else -2,
+            'vx': 2 if random.randint(1, 3) == 1 else -2,
             'vy': 2
         }
         self._score = {
@@ -95,16 +95,25 @@ class Board():
     def _reset_ball(self):
         self._ball['x'] = Constants.WIDTH//2
         self._ball['y'] = Constants.HEIGHT//2
-        self._ball['vx'] = 2 if random.randint(1,3)==1 else -2
+        self._ball['vx'] = 2 if random.randint(1, 3) == 1 else -2
         self._ball['vy'] = 2
 
     def detect_hit(self):
         if self._detect_hit_p1():
             self._ball['vx'] = -self._ball['vx']
-            self._ball['vy'] = 0.05 * (self._ball['y'] - self._paddles['p1']+ Constants.PADDLE_HEIGHT / 2)
+            self._ball['vy'] = 0.05 * (
+                self._ball['y'] -
+                self._paddles['p1'] +
+                Constants.PADDLE_HEIGHT / 2
+            )
+
         if self._detect_hit_p2():
             self._ball['vx'] = -self._ball['vx']
-            self._ball['vy'] = 0.05 * (self._ball['y'] - self._paddles['p2']+ Constants.PADDLE_HEIGHT / 2)
+            self._ball['vy'] = 0.05 * (
+                self._ball['y'] -
+                self._paddles['p2'] +
+                Constants.PADDLE_HEIGHT / 2
+            )
 
     def _detect_hit_p1(self):
         return self._ball['x']-5 <= 25 and self._ball['x']-5 >= 20 and self._ball['y'] >= self._paddles['p1'] and self._ball['y'] <= self._paddles['p1']+Constants.PADDLE_HEIGHT
@@ -117,4 +126,10 @@ class Board():
         label_p1 = font.render(f"P1 : {self._score['p1']}", 1, Color.WHITE)
         label_p2 = font.render(f"P2 : {self._score['p2']}", 1, Color.WHITE)
         self._screen.blit(label_p1, (50, 0))
-        self._screen.blit(label_p2, (Constants.WIDTH-label_p2.get_width()-50, 0))
+        self._screen.blit(
+            label_p2,
+            (
+                Constants.WIDTH-label_p2.get_width()-50,
+                0
+            )
+        )

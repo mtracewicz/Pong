@@ -2,6 +2,7 @@ import pygame
 from board import Board
 from constants import Constants
 
+
 def main():
     run = True
     clock = pygame.time.Clock()
@@ -35,6 +36,7 @@ def main():
             board.move_paddle(paddle_movement)
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()
