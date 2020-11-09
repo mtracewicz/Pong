@@ -14,6 +14,8 @@ def main():
 
     while run:
         clock.tick(Constants.FPS)
+        board.move_ball()
+        board.detect_hit()
         board.draw()
         pygame.display.update()
 

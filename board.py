@@ -1,4 +1,5 @@
 import pygame
+import random
 from color import Color
 from constants import Constants
 
@@ -6,12 +7,21 @@ from constants import Constants
 class Board():
     def __init__(self, screen):
         self._screen = screen
-        self._paddles = {'p1': Constants.HEIGHT//2 -
-                         50, 'p2': Constants.HEIGHT//2-50}
+        self._paddles = {
+            'p1': Constants.HEIGHT//2 - 50,
+            'p2': Constants.HEIGHT//2-50
+        }
+        self._ball = {
+            'x': Constants.WIDTH//2,
+            'y': Constants.HEIGHT//2,
+            'vx': 2 if random.randint(1,3)==1 else -2,
+            'vy': 2
+        }
 
     def draw(self):
         self._draw_board()
         self._draw_paddles()
+        self._draw_ball()
 
     def _draw_board(self):
         self._screen.fill(Color.BLACK)
@@ -46,3 +56,46 @@ class Board():
 
     def _will_paddle_be_visible(self, new_position):
         return (new_position >= 0 and new_position <= Constants.HEIGHT-Constants.PADDLE_HEIGHT)
+
+    def _draw_ball(self):
+        pygame.draw.circle(
+            self._screen,
+            Color.WHITE,
+            (
+                self._ball['x'],
+                self._ball['y']
+            ),
+            10)
+
+    def move_ball(self):
+        self._ball['x'] += self._ball['vx']
+        self._ball['y'] += self._ball['vy']
+
+        if self._is_ball_vertically_out_of_bounds():
+            self._ball['vy'] = -self._ball['vy']
+
+        if self._is_ball_horizontally_out_of_bounds():
+            self._reset_ball()
+
+    def _is_ball_vertically_out_of_bounds(self):
+        return self._ball['y'] <= 0 or self._ball['y'] >= Constants.HEIGHT
+
+    def _is_ball_horizontally_out_of_bounds(self):
+        return self._ball['x'] <= 0 or self._ball['x'] >= Constants.WIDTH
+
+    def _reset_ball(self):
+        self._ball['x'] = Constants.WIDTH//2
+        self._ball['y'] = Constants.HEIGHT//2
+        self._ball['vx'] = 2 if random.randint(1,3)==1 else -2
+        self._ball['vy'] = 2
+
+    def detect_hit(self):
+        if self._detect_hit_p1() or self._detect_hit_p2():
+            self._ball['vx'] = -self._ball['vx']
+            self._ball['vy'] = 0.05 * (self._ball['y'] - self._paddles['p2']+ Constants.PADDLE_HEIGHT / 2)
+
+    def _detect_hit_p1(self):
+        return self._ball['x'] <= 25 and self._ball['x'] >= 20 and self._ball['y'] >= self._paddles['p1'] and self._ball['y'] <= self._paddles['p1']+Constants.PADDLE_HEIGHT
+
+    def _detect_hit_p2(self):
+        return self._ball['x'] >= Constants.WIDTH-25 and self._ball['x'] >= Constants.WIDTH-15 and self._ball['y'] >= self._paddles['p2'] and self._ball['y'] <= self._paddles['p2']+Constants.PADDLE_HEIGHT
