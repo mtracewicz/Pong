@@ -14,8 +14,8 @@ class Board():
         self._ball = {
             'x': Constants.WIDTH//2,
             'y': Constants.HEIGHT//2,
-            'vx': 2 if random.randint(1, 3) == 1 else -2,
-            'vy': 2
+            'vx': 5 if random.randint(1, 3) == 1 else -5,
+            'vy': 5
         }
         self._score = {
             'p1': 0,
@@ -95,8 +95,8 @@ class Board():
     def _reset_ball(self):
         self._ball['x'] = Constants.WIDTH//2
         self._ball['y'] = Constants.HEIGHT//2
-        self._ball['vx'] = 2 if random.randint(1, 3) == 1 else -2
-        self._ball['vy'] = 2
+        self._ball['vx'] = 5 if random.randint(1, 3) == 1 else - 5
+        self._ball['vy'] = 5
 
     def detect_hit(self):
         if self._detect_hit_p1():
