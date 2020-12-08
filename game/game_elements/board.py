@@ -135,7 +135,7 @@ class Board():
         )
 
     def get_data(self):
-        return [1, self._ball['x'], self._ball['y'], self._ball['vx'], self._ball['vy'], self._paddles['p2']]
+        return [1, self._ball['x']/Constants.WIDTH, self._ball['y']/Constants.HEIGHT, self._ball['vx'], self._ball['vy'], self._paddles['p2']/Constants.HEIGHT]
 
     def is_on_learning_side(self):
         return True if self._ball['vx'] < 0 else False

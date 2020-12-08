@@ -54,11 +54,11 @@ class Main():
 
     def handle_menu_click(self, selected):
         if selected == 0:
-            self.nn = NeuralNetwork([5,4])
+            self.nn = NeuralNetwork()
             self.dg = DataGatherer([5])
             self.mode = Mode.GAME
         elif selected == 1:
-            self.nn = NeuralNetwork.load_model() if os.path.exists('model.txt') else NeuralNetwork([5,4])
+            self.nn = NeuralNetwork.load_model() if os.path.exists('model.txt') else NeuralNetwork()
             self.dg = DataGatherer([5])
             self.mode = Mode.GAME
         else:
@@ -98,6 +98,11 @@ class Main():
             if self.mode==Mode.GAME and not self.game_start:
                 self.board.move_paddle('p1', self.player_direction)
                 self.board.move_paddle('p2', self.ai_direction)
+                # if self.board.hit():
+                    # self.dg.save()
+                # elif self.board.reset():
+                    # self.dg.discard()
+
             elif self.mode == Mode.GAME:
                 self.game_start = False
 
