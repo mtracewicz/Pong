@@ -1,4 +1,4 @@
 class Color:
-    BLACK = (0, 0, 0)
+    BLACK = (0x2e, 0x2e, 0x2e)
     WHITE = (255, 255, 255)
-    RED = (255, 0, 0)
+    RED = (0xf0, 0x3a , 0x47)

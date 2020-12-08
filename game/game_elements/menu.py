@@ -10,6 +10,7 @@ class Menu():
         self._screen = screen
 
     def draw_menu(self):
+        self._screen.fill(Color.BLACK)
         menu_start_position = Constants.HEIGHT//2 - 100
         menu_horizontal_position = Constants.WIDTH//2-100
         for i in range(len(self._menu_items_text)):

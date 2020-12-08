@@ -10,7 +10,8 @@ from ml.neural_network import NeuralNetwork
 class Main():
     def __init__(self):
         self.player_direction = 0
-        self.run = True
+        self.ai_direction = 0
+
         self.clock = pygame.time.Clock()
         pygame.init()
         pygame.display.set_caption('Pong')
@@ -30,6 +31,10 @@ class Main():
                 self.player_direction = -1
             if event.key == pygame.K_DOWN:
                 self.player_direction = 1
+            if event.key == pygame.K_ESCAPE:
+                self.mode = Mode.MENU
+                self.nn.save_model()
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
                 self.player_direction = 0
@@ -57,11 +62,11 @@ class Main():
             self.dg = DataGatherer([5])
             self.mode = Mode.GAME
         else:
-            exit()
+            self.end_game(False)
 
 
     def play(self):
-        while self.run:
+        while True:
             self.clock.tick(Constants.FPS)
 
             if self.mode==Mode.MENU:
@@ -78,13 +83,13 @@ class Main():
                 else:
                     self.nn.fit(self.dg.get_data()[:,:3],self.dg.get_data()[:,4])
 
-                ai_direction = self.nn.predict(current_data)
+                self.ai_direction = self.nn.predict(current_data)
             pygame.display.update()
 
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.run = False
+                    self.end_game()
                 if self.mode == Mode.MENU:
                     self.handle_menu(event)
                 else:
@@ -92,12 +97,15 @@ class Main():
 
             if self.mode==Mode.GAME and not self.game_start:
                 self.board.move_paddle('p1', self.player_direction)
-                self.board.move_paddle('p2', ai_direction)
+                self.board.move_paddle('p2', self.ai_direction)
             elif self.mode == Mode.GAME:
                 self.game_start = False
 
-        self.nn.save_model()
+    def end_game(self, save:bool = True):
+        if save:
+            self.nn.save_model()
         pygame.quit()
+        exit(0)
 
 
 if __name__ == "__main__":

@@ -6,14 +6,15 @@ class NeuralNetwork():
         self._hidden_layers = len(neurons_per_layer)-1
         self._neurons_per_layer = neurons_per_layer
         number_of_weights = int(np.sum(np.array([self._neurons_per_layer[i]*self._neurons_per_layer[i+1] for i in range(self._hidden_layers)]))+self._neurons_per_layer[-1])
-        self._weights = weights or np.random.rand(number_of_weights) - 0.5
+        self._weights = weights if weights is not None else np.random.rand(number_of_weights) - 0.5
 
     def fit(self, inputs, outputs, learning_rate = 0.05):
         pass
 
     def predict(self, inputs):
-        return randint(-1,2)
-        # return (int(abs(np.sum(inputs*self._weights)))%3) -1;
+        #a = (int(np.sum(inputs*self._weights)))
+        a = randint(-5,5)
+        return -1 if a < 0 else 0 if a == 0 else 1
 
     def save_model(self):
         with open('model.txt','w') as f:
