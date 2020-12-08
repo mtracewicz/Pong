@@ -17,9 +17,9 @@ class NeuralNetwork():
 
     def save_model(self):
         with open('model.txt','w') as f:
-            f.write(np.array2string(self._neurons_per_layer))
+            f.write(str(self._neurons_per_layer))
             f.write('#####')
-            f.write(np.array2string(self._weights))
+            f.write(str(self._weights))
             f.flush()
 
     @staticmethod
@@ -27,6 +27,10 @@ class NeuralNetwork():
         with open('model.txt','r') as f:
             text = f.read()
             text = text.split('#####')
-        neurons_per_layer = np.fromstring(text[0])
-        weights = np.fromstring(text[1]).reshape(neurons_per_layer)
+        tmp = (list((text[0][1:-1]).split(' ')))
+        neurons_per_layer= [i[:-1] if i[-1]==',' else i for i in tmp]
+        neurons_per_layer = np.array(neurons_per_layer, dtype=np.uint8)
+        tmp = (list((text[1][1:-1].replace('\n','')).split(' ')))
+        weights = [i for i in tmp if i!='']
+        weights = np.array(weights,dtype=np.float)
         return NeuralNetwork(neurons_per_layer, weights)
