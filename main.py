@@ -7,6 +7,7 @@ from game.constants.modes import Mode
 from ml.data_gatherer import DataGatherer
 from ml.neural_network import NeuralNetwork
 
+
 class Main():
     def __init__(self):
         self.player_direction = 0
@@ -15,7 +16,8 @@ class Main():
         self.clock = pygame.time.Clock()
         pygame.init()
         pygame.display.set_caption('Pong')
-        self.screen = pygame.display.set_mode([Constants.WIDTH, Constants.HEIGHT])
+        self.screen = pygame.display.set_mode(
+            [Constants.WIDTH, Constants.HEIGHT])
 
         self.nn = None
         self.dg = None
@@ -58,18 +60,18 @@ class Main():
             self.dg = DataGatherer([5])
             self.mode = Mode.GAME
         elif selected == 1:
-            self.nn = NeuralNetwork.load_model() if os.path.exists('model.txt') else NeuralNetwork()
+            self.nn = NeuralNetwork.load_model() if os.path.exists(
+                'model.txt') else NeuralNetwork()
             self.dg = DataGatherer([5])
             self.mode = Mode.GAME
         else:
             self.end_game(False)
 
-
     def play(self):
         while True:
             self.clock.tick(Constants.FPS)
 
-            if self.mode==Mode.MENU:
+            if self.mode == Mode.MENU:
                 self.menu.draw_menu()
             else:
                 self.board.move_ball()
@@ -81,11 +83,11 @@ class Main():
                 if self.board.is_on_learning_side():
                     self.dg.record(current_data)
                 else:
-                    self.nn.fit(self.dg.get_data()[:,:3],self.dg.get_data()[:,4])
+                    self.nn.fit(self.dg.get_data()[
+                                :, :3], self.dg.get_data()[:, 4])
 
                 self.ai_direction = self.nn.predict(current_data)
             pygame.display.update()
-
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -95,24 +97,24 @@ class Main():
                 else:
                     self.handle_game(event)
 
-            if self.mode==Mode.GAME and not self.game_start:
+            if self.mode == Mode.GAME and not self.game_start:
                 self.board.move_paddle('p1', self.player_direction)
                 self.board.move_paddle('p2', self.ai_direction)
-                # if self.board.hit():
-                    # self.dg.save()
-                # elif self.board.reset():
-                    # self.dg.discard()
+                if self.board.hit():
+                    self.dg.save()
+                elif self.board.reset():
+                    self.dg.discard()
 
             elif self.mode == Mode.GAME:
                 self.game_start = False
 
-    def end_game(self, save:bool = True):
-        if save:
+    def end_game(self, save: bool = True):
+        if save and self.nn is not None:
             self.nn.save_model()
         pygame.quit()
         exit(0)
 
 
 if __name__ == "__main__":
-    game= Main()
+    game = Main()
     game.play()
