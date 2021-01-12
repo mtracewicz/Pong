@@ -1,9 +1,11 @@
 import os
+import numpy as np
 import pygame
-from game.game_elements.board import Board
-from game.game_elements.menu import Menu
+
 from game.constants.constants import Constants
 from game.constants.modes import Mode
+from game.game_elements.board import Board
+from game.game_elements.menu import Menu
 from ml.data_gatherer import DataGatherer
 from ml.neural_network import NeuralNetwork
 
@@ -57,7 +59,8 @@ class Main():
     def handle_menu_click(self, selected):
         if selected == 0:
             self.nn = NeuralNetwork()
-            self.dg = DataGatherer([5])
+            self.dg = DataGatherer()
+            self.board.add_dg(self.dg)
             self.mode = Mode.GAME
         elif selected == 1:
             self.nn = NeuralNetwork.load_model() if os.path.exists(
@@ -80,13 +83,12 @@ class Main():
 
                 current_data = self.board.get_data()
 
-                if self.board.is_on_learning_side():
-                    self.dg.record(current_data)
-                else:
-                    self.nn.fit(self.dg.get_data()[
-                                :, :3], self.dg.get_data()[:, 4])
+                self.dg.record(current_data)
+                if self.dg.learn:
+                    self.nn.fit(self.dg.get_data())
 
-                self.ai_direction = self.nn.predict(current_data)
+                self.ai_direction = self.nn.predict(
+                    current_data[:-1])[-1][-1][0]
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -100,10 +102,6 @@ class Main():
             if self.mode == Mode.GAME and not self.game_start:
                 self.board.move_paddle('p1', self.player_direction)
                 self.board.move_paddle('p2', self.ai_direction)
-                if self.board.hit():
-                    self.dg.save()
-                elif self.board.reset():
-                    self.dg.discard()
 
             elif self.mode == Mode.GAME:
                 self.game_start = False

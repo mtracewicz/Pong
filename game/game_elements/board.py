@@ -97,6 +97,7 @@ class Board():
         self._ball['y'] = Constants.HEIGHT//2
         self._ball['vx'] = 5 if random.randint(1, 3) == 1 else - 5
         self._ball['vy'] = 5
+        self.dg.discard()
 
     def detect_hit(self):
         if self._detect_hit_p1():
@@ -106,6 +107,7 @@ class Board():
                 self._paddles['p1'] +
                 Constants.PADDLE_HEIGHT / 2
             )
+            self.dg.save()
 
         if self._detect_hit_p2():
             self._ball['vx'] = -self._ball['vx']
@@ -114,6 +116,7 @@ class Board():
                 self._paddles['p2'] +
                 Constants.PADDLE_HEIGHT / 2
             )
+            self.dg.save()
 
     def _detect_hit_p1(self):
         return self._ball['x']-5 <= 25 and self._ball['x']-5 >= 20 and self._ball['y'] >= self._paddles['p1'] and self._ball['y'] <= self._paddles['p1']+Constants.PADDLE_HEIGHT
@@ -135,7 +138,10 @@ class Board():
         )
 
     def get_data(self):
-        return [1, self._ball['x']/Constants.WIDTH, self._ball['y']/Constants.HEIGHT, self._ball['vx'], self._ball['vy'], self._paddles['p2']/Constants.HEIGHT]
+        return [self._ball['x']/Constants.WIDTH, self._ball['y']/Constants.HEIGHT, self._ball['vx'], self._ball['vy'], self._paddles['p2']/Constants.HEIGHT]
 
     def is_on_learning_side(self):
         return True if self._ball['vx'] < 0 else False
+
+    def add_dg(self, dg):
+        self.dg = dg
