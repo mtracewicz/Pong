@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pygame
+import asyncio
 
 from game.constants.constants import Constants
 from game.constants.modes import Mode
@@ -70,7 +71,7 @@ class Main():
         else:
             self.end_game(False)
 
-    def play(self):
+    async def play(self):
         while True:
             self.clock.tick(Constants.FPS)
 
@@ -84,11 +85,12 @@ class Main():
                 current_data = self.board.get_data()
 
                 self.dg.record(current_data)
-                if self.dg.learn:
-                    self.nn.fit(self.dg.get_data())
+                if self.dg.learn and not self.nn.learning:
+                    await self.nn.fit(self.dg.get_data())
 
-                self.ai_direction = self.nn.predict(
+                self.ai_direction = self.nn.make_predict(
                     current_data[:-1])[-1][-1][0]
+                self.ai_direction = 1 if self.ai_direction > current_data[-1] else -1
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -115,4 +117,6 @@ class Main():
 
 if __name__ == "__main__":
     game = Main()
-    game.play()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(game.play())
+    loop.close

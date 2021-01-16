@@ -13,7 +13,7 @@ class DataGatherer():
     def save(self):
         tmp = np.array(self._tmp.copy())
         self._data = np.append(self._data, tmp, axis=0)
-        self.learn = (len(self._data) % 5 == 0 and len(self._data) > 0)
+        self.learn = True
 
     def discard(self):
         self._tmp = []
