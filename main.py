@@ -85,13 +85,13 @@ class Main():
                 current_data = self.board.get_data()
 
                 self.dg.record(current_data)
-                t = pygame.time.get_ticks() // 10000
+                t = pygame.time.get_ticks() // 30000
                 if self.dg.learn and not self.nn.learning and t > t_old:
                     t_old = t
                     self.nn.fit(self.dg.get_data())
 
                 self.ai_direction = self.nn.make_predict(
-                    current_data[:-1])[-1][-1][0]
+                    current_data[:-1])[-1][0]
                 self.ai_direction = 1 if self.ai_direction > current_data[-1] else -1
             pygame.display.update()
 
@@ -120,6 +120,3 @@ class Main():
 if __name__ == "__main__":
     game = Main()
     game.play()
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(game.play())
-    # loop.close

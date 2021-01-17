@@ -1,15 +1,5 @@
-[4 5 9 1]#####[array([[nan, nan, nan, nan],
-       [nan, nan, nan, nan],
-       [nan, nan, nan, nan],
-       [nan, nan, nan, nan],
-       [nan, nan, nan, nan]])
- array([[nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan],
-       [nan, nan, nan, nan, nan]])
- array([[nan, nan, nan, nan, nan, nan, nan, nan, nan]])]
+[4 2 2 1]#####[array([[ 0.73226836, -1.18694936, -0.00465249,  0.12193348],
+       [-1.33149847,  0.91319386, -0.57988791,  0.41465797]])
+ array([[0.64730823, 0.51931855],
+       [0.58341838, 0.15065806]])
+ array([[ 0.47577732, -0.65340275]])]

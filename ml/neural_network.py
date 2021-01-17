@@ -30,7 +30,7 @@ class NeuralNetwork():
     def derived_sigmoid(self, x):
         return x * (1 - x)
 
-    def backpropagation(self, weights, y, pre_activation, activated):
+    def backpropagation(self, weights, y, activated):
         delta_weights = []
         delta_biases = []
         deltas = [None] * len(weights)
@@ -44,7 +44,7 @@ class NeuralNetwork():
                          for i, d in enumerate(deltas)]
         return delta_weights, delta_biases
 
-    def fit(self, data, epochs=20, learning_rate=0.05):
+    def fit(self, data, epochs=5, learning_rate=0.05):
         self.learning = True
         w, b = self.internal_fit(data, epochs, learning_rate)
         self.learning = False
@@ -60,10 +60,10 @@ class NeuralNetwork():
             i = 0
             while(i < x.shape[0] - 1):
                 i += 1
-                pre_activation, activated = self.predict(
+                activated = self.predict(
                     _weights, _biases, x[i])
                 delta_weights, delta_biases = self.backpropagation(
-                    _weights, y[i], pre_activation, activated)
+                    _weights, y[i], activated)
                 _weights = [w+learning_rate*dweight for w,
                             dweight in zip(_weights, delta_weights)]
                 _biases = [w+learning_rate*dbias for w,
@@ -78,7 +78,7 @@ class NeuralNetwork():
             pre_activation.append(weights[i].dot(a) + biases[i])
             a = self.sigmoid(pre_activation[-1])
             activated.append(a)
-        return (pre_activation, activated)
+        return activated
 
     def make_predict(self, x):
         a = np.copy(x)
@@ -88,7 +88,7 @@ class NeuralNetwork():
             pre_activation.append(self.weights[i].dot(a) + self.biases[i])
             a = self.sigmoid(pre_activation[-1])
             activated.append(a)
-        return (pre_activation, activated)
+        return activated
 
     def save_model(self):
         with open('model.txt', 'w') as f:
