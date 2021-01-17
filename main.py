@@ -38,6 +38,8 @@ class Main():
             if event.key == pygame.K_ESCAPE:
                 self.mode = Mode.MENU
                 self.nn.save_model()
+            if event.key == pygame.K_SPACE:
+                self.nn.fit(self.dg.get_data())
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
@@ -75,7 +77,6 @@ class Main():
             self.end_game()
 
     def play(self):
-        t_old = 0
         while True:
             self.clock.tick(Constants.FPS)
 
@@ -89,10 +90,6 @@ class Main():
                 current_data = self.board.get_data()
 
                 self.dg.record(current_data)
-                t = pygame.time.get_ticks() // 30000
-                if self.dg.learn and t > t_old:
-                    t_old = t
-                    self.nn.fit(self.dg.get_data())
 
                 if current_data[2] > 0:
                     self.ai_direction = self.nn.predict(
