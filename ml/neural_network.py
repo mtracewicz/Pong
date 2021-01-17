@@ -1,9 +1,8 @@
 import numpy as np
-import asyncio
 
 
 class NeuralNetwork():
-    def __init__(self, neurons_per_layer=np.array([4, 5, 9, 1]), weights=None):
+    def __init__(self, neurons_per_layer=np.array([4, 2, 2, 1]), weights=None):
         self._neurons_per_layer = neurons_per_layer
         self.weights = []
         self.biases = []
@@ -29,33 +28,28 @@ class NeuralNetwork():
         return 1/(1+np.exp(-x))
 
     def derived_sigmoid(self, x):
-        return x*(1-x)
+        return x * (1 - x)
 
     def backpropagation(self, weights, y, pre_activation, activated):
         delta_weights = []
         delta_biases = []
         deltas = [None] * len(weights)
         deltas[-1] = ((y-activated[-1]) *
-                      (self.derived_sigmoid(pre_activation[-1])))
+                      (self.derived_sigmoid(activated[-1])))
         for i in reversed(range(len(deltas)-1)):
-            deltas[i] = weights[i+1].T.dot(deltas[i+1])*(
-                self.derived_sigmoid(pre_activation[i]))
+            deltas[i] = weights[i+1].T.dot(deltas[i+1])
+            deltas[i] *= (self.derived_sigmoid(activated[i+1]))
         delta_biases = deltas
         delta_weights = [d.dot(activated[i+1].T)
                          for i, d in enumerate(deltas)]
         return delta_weights, delta_biases
 
-    async def fit(self, data, epochs=20, learning_rate=0.05):
+    def fit(self, data, epochs=20, learning_rate=0.05):
         self.learning = True
-        t = asyncio.create_task(self.fit_task(data, epochs, learning_rate))
-        await asyncio.wait_for(t, None)
-        w, b = t.result()
+        w, b = self.internal_fit(data, epochs, learning_rate)
         self.learning = False
         self.weights = np.copy(w)
         self.biases = np.copy(b)
-
-    async def fit_task(self, data, epochs=20, learning_rate=0.05):
-        return self.internal_fit(data, epochs, learning_rate)
 
     def internal_fit(self, data, epochs=20, learning_rate=0.05):
         x = data[:, : 4]
