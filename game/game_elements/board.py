@@ -96,7 +96,8 @@ class Board():
         self._ball['x'] = Constants.WIDTH//2
         self._ball['y'] = Constants.HEIGHT//2
         self._ball['vx'] = 5 if random.randint(1, 3) == 1 else - 5
-        self._ball['vy'] = 5
+        self._ball['vy'] = random.randint(-5, 6)
+        self._ball['vy'] = 5 if self._ball['vy'] == 0 else self._ball['vy']
         self.dg.discard()
 
     def detect_hit(self):

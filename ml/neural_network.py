@@ -51,7 +51,7 @@ class NeuralNetwork():
         self.weights = np.copy(w)
         self.biases = np.copy(b)
 
-    def internal_fit(self, data, epochs=20, learning_rate=0.05):
+    def internal_fit(self, data, epochs=5, learning_rate=0.05):
         x = data[:, : 4]
         y = data[:, 4]
         _weights = np.copy(self.weights)

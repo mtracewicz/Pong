@@ -12,6 +12,7 @@ class DataGatherer():
 
     def save(self):
         tmp = np.array(self._tmp.copy())
+        tmp[:, -1] = tmp[-1, -1]
         self._data = np.append(self._data, tmp, axis=0)
         self.learn = True
 
