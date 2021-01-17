@@ -64,11 +64,15 @@ class Main():
             self.mode = Mode.GAME
         elif selected == 1:
             self.nn = NeuralNetwork.load_model() if os.path.exists(
-                'model.txt') else NeuralNetwork()
-            self.dg = DataGatherer([5])
+                os.path.join('model', 'weights.npy')) else NeuralNetwork()
+            self.dg = DataGatherer(np.load(os.path.join("model", "data.npy"))) if os.path.exists(
+                os.path.join("model", "data.npy"))else DataGatherer()
             self.mode = Mode.GAME
+            self.board.add_dg(self.dg)
+        elif selected == 2:
+            self.save()
         else:
-            self.end_game(False)
+            self.end_game()
 
     def play(self):
         t_old = 0
@@ -90,9 +94,11 @@ class Main():
                     t_old = t
                     self.nn.fit(self.dg.get_data())
 
-                self.ai_direction = self.nn.predict(
-                    current_data[:-1])[-1][0]
-                self.ai_direction = 1 if self.ai_direction > current_data[-1] else -1
+                if current_data[2] > 0:
+                    self.ai_direction = self.nn.predict(
+                        current_data[:-1])[-1][0]
+                    self.ai_direction = 1 if self.ai_direction > current_data[-1] else -1
+
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -110,11 +116,15 @@ class Main():
             elif self.mode == Mode.GAME:
                 self.game_start = False
 
-    def end_game(self, save: bool = True):
-        if save and self.nn is not None:
-            self.nn.save_model()
+    def end_game(self):
         pygame.quit()
         exit(0)
+
+    def save(self):
+        if self.nn is not None:
+            self.nn.save_model()
+        if self.dg is not None:
+            self.dg.save_data()
 
 
 if __name__ == "__main__":
