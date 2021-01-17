@@ -86,11 +86,11 @@ class Main():
 
                 self.dg.record(current_data)
                 t = pygame.time.get_ticks() // 30000
-                if self.dg.learn and not self.nn.learning and t > t_old:
+                if self.dg.learn and t > t_old:
                     t_old = t
                     self.nn.fit(self.dg.get_data())
 
-                self.ai_direction = self.nn.make_predict(
+                self.ai_direction = self.nn.predict(
                     current_data[:-1])[-1][0]
                 self.ai_direction = 1 if self.ai_direction > current_data[-1] else -1
             pygame.display.update()
